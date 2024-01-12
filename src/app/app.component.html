@@ -1,11 +1,48 @@
 <div class="container">
-  <ul class="wish-list">
+  <!-- if the expression is true, render the div and its content -->
+  <!-- if the expression is false, render a template called showItems -->
+  <!-- define the showItems template using a special component called ng-template (done below) -->
+  <div *ngIf="items.length === 0; else showItems">There are no wishes yet!</div>
+
+  <ng-template #showItems>
+    <ul class="wish-list">
+      <li *ngFor="let item of items; index as wishIndex">
+        <div class="form-check">
+          <label class="form-check-label"></label>
+          <!-- can bind to HTML attributes also, not just js properties (like we did with checked). Use square brackets and prefix attribute name with "attr." -->
+          <input
+            class="check-box"
+            [checked]="item.isComplete"
+            [attr.data-index] ="wishIndex"
+            type="checkbox"
+          />
+          {{ item.wishText }}
+        </div>
+      </li>
+    </ul>
+  </ng-template>
+</div>
+
+
+
+
+<!-- The code below is an example of how to achieve the exact same result but with different syntax, it is hidden with display none -->
+
+
+
+<div class="container hide">
+  <!-- using ngIf to add an element to the document if there are no wishes in the items array so we don't just have a blank screen, displayed if expression true, not displayed if false -->
+  <div *ngIf="items.length === 0">There are no wishes yet!</div>
+  <!-- ngIf is a structural directive. It changes the structure of the document based on the condition -->
+  <!-- NOTE: you CANNOT have 2 structural directives on the same element -->
+  <ul *ngIf="items.length > 0" class="wish-list">
     <!-- angular directives written like attributes with a star in front -->
     <!-- ngFor is a structural directive, it changes the structure of the dom. Adding an li element to dom for every item in the array in this case -->
     <li *ngFor="let item of items">
       <div class="form-check">
         <label class="form-check-label"></label>
-        <input class="check-box" type="checkbox" />
+        <!-- Using property binding on the checked property, we will bind our isComplete boolean property to the checked javascript property (not the HTML attribute) on the input element  -->
+        <input class="check-box" [checked]="item.isComplete" type="checkbox" />
         {{ item.wishText }}
       </div>
     </li>
