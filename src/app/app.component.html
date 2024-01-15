@@ -1,34 +1,71 @@
 <div class="container">
-  <!-- if the expression is true, render the div and its content -->
-  <!-- if the expression is false, render a template called showItems -->
-  <!-- define the showItems template using a special component called ng-template (done below) -->
-  <div *ngIf="items.length === 0; else showItems">There are no wishes yet!</div>
+  <form class="row mt-3 gx-3 hy-2 align-items-center justify-content-center">
+    <div class="col-sm-6">
+      <label class="visually-hidden" for="specificSizeInputName">Wish</label>
+      <!-- ngModel is telling Angular we want to bind the value of the form field to a property in our class  -->
+      <input
+        name="new-wish-text"
+        type="text"
+        class="form-control"
+        [(ngModel)]="newWishText"
+      />
+    </div>
+    <div class="col-auto">
+      <!-- $event.preventDefault prevents the form from being submitted since that is the default behaviour of clicking a button inside a form  -->
+      <button
+        type="submit"
+        class="btn btn-primary"
+        (click)="($event.preventDefault); addNewWish()"
+      >
+        Add Wish
+      </button>
+    </div>
+  </form>
 
-  <ng-template #showItems>
-    <ul class="wish-list">
-      <li *ngFor="let item of items; index as wishIndex">
-        <div class="form-check">
-          <label class="form-check-label"></label>
-          <!-- can bind to HTML attributes also, not just js properties (like we did with checked). Use square brackets and prefix attribute name with "attr." -->
-          <input
-            class="check-box"
-            [checked]="item.isComplete"
-            [attr.data-index] ="wishIndex"
-            type="checkbox"
-          />
-          {{ item.wishText }}
-        </div>
-      </li>
-    </ul>
-  </ng-template>
+  <div class="row mt-3">
+    <div class="col-sm-2">
+      <!-- ngmodel here is binding the value of the option value attribute to the property listFilter in our class -->
+      <!-- ngModelChange is an event that only occurs when the model changes, can only use this event on elements that use the ngModel directive. The event object when using ngModelChange contains the new value.  THIS IS NO LONGER uSED IN THE CODE! WE REMOVED IT!  -->
+      <select class="form-select"
+      [(ngModel)]="listFilter">
+        <option value="0">All</option>
+        <option value="1">Unfulfilled</option>
+        <option value="2">Fulfilled</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <!-- if the expression is true, render the div and its content -->
+    <!-- if the expression is false, render a template called showItems -->
+    <!-- define the showItems template using a special component called ng-template (done below) -->
+    <div *ngIf="visibleItems.length === 0; else showItems">
+      There are no wishes yet!
+    </div>
+
+    <ng-template #showItems>
+      <ul class="wish-list">
+        <li *ngFor="let item of visibleItems; index as wishIndex">
+          <div class="form-check">
+            <label class="form-check-label"></label>
+            <!-- can bind to HTML attributes also, not just js properties (like we did with checked). Use square brackets and prefix attribute name with "attr." -->
+            <input
+              class="check-box"
+              [checked]="item.isComplete"
+              [attr.data-index]="wishIndex"
+              type="checkbox"
+              (click)="toggleWish(item)"
+            />
+            {{ item.wishText }}
+          </div>
+        </li>
+      </ul>
+    </ng-template>
+  </div>
+
 </div>
 
-
-
-
 <!-- The code below is an example of how to achieve the exact same result but with different syntax, it is hidden with display none -->
-
-
 
 <div class="container hide">
   <!-- using ngIf to add an element to the document if there are no wishes in the items array so we don't just have a blank screen, displayed if expression true, not displayed if false -->
